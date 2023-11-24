@@ -82,8 +82,8 @@ class DatabaseSeeder extends Seeder
             'problem_description' => 'Se frego el carrito',
             'latitud' => -17.851482,
             'longitud' => -63.166290,
-            //'photos' => '',
-            //'voice_note' => '',
+            'photos' => 'a',
+            'voice_note' => 'a',
             'status' => 'pendiente'
         ]);
 
