@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\api\AssistanceRequestController;
+use App\Http\Controllers\Api\AssistanceRequestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PagoController;
 use Illuminate\Http\Request;
