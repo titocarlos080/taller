@@ -5,23 +5,70 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\Assistance_request;
 use App\Models\Client;
+use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\Workshop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class AssistanceRequestController extends Controller
 {
+
+    public function registerVehicle(Request $request){
+     try {
+        //code...
+         $request->validate([
+            'brand'=>'required|string',
+            'model'=>'required|string',
+            'year'=>'required|string',
+            'licence_plate'=>'required|string',
+            'client_id'=>'required',
+         ]);         
+         
+        $cliente = Client::where('user_id',$request->client_id)->first();
+           Vehicle::create([
+            'brand'=> $request->brand,
+            'model'=> $request->model,
+            'year'=> $request->year,
+            'licence_plate'=> $request->licence_plate,
+            'client_id'=> $cliente->id,
+           ]);
+ 
+
+      return  response()->json(['message'=>'Vehiculo registrado correctamente'], 201);
+    } catch (\Throwable $th) {
+        //throw $th;
+        return  response()->json(['message'=>'Error al crear vehiculo','error'=>$th], 500);
+     }
+
+    }
+
+
     public function getVehicles($client_id)
     {
-        try {
+           try {
             $cliente = Client::where('user_id', $client_id)->first();
+            
             $vehicles = Vehicle::where('client_id', $cliente->id)->get();
-
+ 
             return response()->json($vehicles, 201);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Error al procesar la solicitud de asistencia', 'error' => $th->getMessage()], 500);
         }
     }
+   public function getAssistanceWorkshop($workshop_id)
+    {
+        try {
+            $workshop = Workshop::where('user_id', $workshop_id)->first();
+            $assistance = Vehicle::where('id', $workshop->id)->get();
+
+            return response()->json($assistance, 201);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Error al procesar la solicitud de asistencia', 'error' => $th->getMessage()], 500);
+        }
+    }
+
+
 
     public function getAssistanceRequests($client_id)
     {

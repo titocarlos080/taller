@@ -10,7 +10,7 @@ class Vehicle extends Model
     use HasFactory;
     
     protected $table = 'vehicles';
-
+    public $timestamps = true;
     protected $fillable = [
         'brand',
         'model',
@@ -18,4 +18,9 @@ class Vehicle extends Model
         'licence_plate',
         'client_id'
     ];
+    
+    public function cliente()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 }

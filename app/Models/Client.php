@@ -20,4 +20,8 @@ class Client extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function cliente()
+    {
+        return $this->hasMany(Vehicle::class, 'client_id');
+    }
 }
