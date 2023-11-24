@@ -95,8 +95,8 @@ class DatabaseSeeder extends Seeder
             'problem_description' => 'No da el radiador',
             'latitud' => -17.851482,
             'longitud' => -63.166290,
-            //'photos' => '',
-            //'voice_note' => '',
+            'photos' => 'a',
+         'voice_note' => 'a',
             'status' => 'pendiente'
         ]);
     }
