@@ -10,17 +10,20 @@ class Assistance_request extends Model
     use HasFactory;
 
     protected $table = 'assistance_requests';
+    public $timestamps = true;
 
     protected $fillable = [
         'client_id',
-        'workshop_id',
         'vehicle_id',
-        'technician_id',
         'problem_description',
         'latitud',
         'longitud',
         'photos',
         'voice_note',
-        'status'
+        'status_id'
     ];
+    public function estado()
+    {
+        return $this->belongsTo(Status::class, 'status_id');
+    }
 }

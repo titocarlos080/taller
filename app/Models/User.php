@@ -23,11 +23,13 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    public $timestamps = true;
+
     protected $fillable = [
         'name',
         'email',
         'password',
-        'type',
+        'rol_id',
     ];
 
     /**
@@ -68,5 +70,13 @@ class User extends Authenticatable
     public function clients()
     {
         return $this->hasMany(Client::class, 'user_id');
+    }
+    public function technicians()
+    {
+        return $this->hasMany(Technician::class, 'user_id');
+    }
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'rol_id');
     }
 }

@@ -22,4 +22,12 @@ class Workshop extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function assistance_requests()
+    {
+        return $this->hasMany(Assistance_requests_workshop::class, 'workshop_id');
+    }
+    public function technicians()
+    {
+        return $this->hasMany(Technician::class, 'workshop_id');
+    }
 }

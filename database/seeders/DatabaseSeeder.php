@@ -6,6 +6,8 @@ namespace Database\Seeders;
 
 use App\Models\Assistance_request;
 use App\Models\Client;
+use App\Models\Rol;
+use App\Models\Status;
 use App\Models\Technician;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -19,11 +21,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $rol_taller = Rol::create(['name'=>'taller']);
+        $rol_tecnico = Rol::create(['name'=> 'tecnico']);
+        $rol_cliente = Rol::create(['name'=>'cliente']);
+        $stado_disponible = Status::create(['name'=>'disponible']);
+        $stado_trabajando = Status::create(['name'=> 'trabajando']);
+        $stado_terminado = Status::create(['name'=>'terminado']);
+
         $taller = User::create([
             'name' => 'Tito Carlos',
             'email' => 'titocarlos080@gmail.com',
             'password' => bcrypt('123'),
-            'type' => 'taller'
+            'rol_id' => $rol_taller->id
         ]);
 
         $tallerTecn = Workshop::create([
@@ -33,23 +42,36 @@ class DatabaseSeeder extends Seeder
             'user_id' => $taller->id
         ]);
 
-        $tecnico1 = Technician::create([
-            'name' => 'Ing Milton Soto',
-            'phone' => '84585325',
-            'workshop_id' => $tallerTecn->id
+        $tecnico1_user =  User::create([
+            'name' => 'Don juan',
+            'email' => 'juan@gmail.com',
+            'password' => bcrypt('123'),
+            'rol_id' => $rol_tecnico->id
         ]);
 
-        $tecnico2 = Technician::create([
-            'name' => 'Ing Mario Mendez',
+        $tecnico2_user =  User::create([
+            'name' => 'Don Verto',
+            'email' => 'verto@gmail.com',
+            'password' => bcrypt('123'),
+            'rol_id' => $rol_tecnico->id
+        ]);
+
+        $tecnico1 = Technician::create([
             'phone' => '10235894',
-            'workshop_id' => $tallerTecn->id
+            'workshop_id' => $tallerTecn->id,
+            'user_id' => $tecnico1_user->id
+        ]);
+        $tecnico2 = Technician::create([
+            'phone' => '10235894',
+            'workshop_id' => $tallerTecn->id,
+            'user_id' =>  $tecnico2_user->id
         ]);
 
         $cliente = User::create([
             'name' => 'Juan Roca',
             'email' => 'cliente1@gmail.com',
             'password' => bcrypt('123'),
-            'type' => 'cliente'
+            'rol_id' => $rol_cliente->id
         ]);
 
         $cliVehicle = Client::create([
@@ -57,7 +79,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => $cliente->id
         ]);
 
-        $vehiculo1= Vehicle::create([
+        $vehiculo1 = Vehicle::create([
             'brand' => 'Toyota',
             'model' => 'Corolla',
             'year' => 2011,
@@ -76,28 +98,25 @@ class DatabaseSeeder extends Seeder
 
         Assistance_request::create([
             'client_id' => $cliVehicle->id,
-            'workshop_id' => $tallerTecn->id,
             'vehicle_id' => $vehiculo1->id,
-            'technician_id' => $tecnico1->id,
             'problem_description' => 'Se frego el carrito',
             'latitud' => -17.851482,
             'longitud' => -63.166290,
             'photos' => 'a',
             'voice_note' => 'a',
-            'status' => 'pendiente'
+            'status_id' =>$stado_disponible->id
         ]);
 
         Assistance_request::create([
             'client_id' => $cliVehicle->id,
-            'workshop_id' => $tallerTecn->id,
             'vehicle_id' => $vehiculo2->id,
-            'technician_id' => $tecnico2->id,
             'problem_description' => 'No da el radiador',
             'latitud' => -17.851482,
             'longitud' => -63.166290,
             'photos' => 'a',
-         'voice_note' => 'a',
-            'status' => 'pendiente'
+            'voice_note' => 'a',
+            'status_id' => $stado_disponible->id
         ]);
+        
     }
 }

@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AssistanceRequestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PagoController;
+use App\Http\Controllers\Api\TechnicianController;
+use App\Http\Controllers\Api\WorkShopController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,10 +35,15 @@ Route::get('/users', [AuthController::class, 'users']);
 
 Route::get('/assistance_request/getVehicles/client_id={id}', [AssistanceRequestController::class, 'getVehicles']);
 Route::post('/vehicles/register', [AssistanceRequestController::class, 'registerVehicle']);
-Route::get('/assistance_request/getAll/client_id={id}', [AssistanceRequestController::class, 'getAssistanceRequests']);
-Route::post('/assistance_request/clientRequestAssistance', [AssistanceRequestController::class, 'clientRequestAssistance']);
+ Route::post('/asisstance_request/register', [AssistanceRequestController::class, 'clientRequestAssistance']);
 // solicidtud de todas las 
 Route::get('/assistance_request/getAll/client_id={id}', [AssistanceRequestController::class, 'getAssistanceRequests']);
+Route::get('/assistance_request/getAll', [AssistanceRequestController::class, 'getAssistanceRequestsAviable']);
 //pagos
 Route::post('/procesar_pago', [PagoController::class, 'procesarPago']);
-
+//Technicians
+Route::get('/workshop/technician/getAll/client_id={id}', [TechnicianController::class, 'getTechnician']);
+Route::post('/workshop/technicians/register', [TechnicianController::class, 'createTechnician']);
+//workshops
+Route::get('/workshop/all', [WorkShopController::class, 'getWorkShops']);
+Route::get('/workshop/technicians/all/client_id={id}', [TechnicianController::class, 'getTechnician']);
