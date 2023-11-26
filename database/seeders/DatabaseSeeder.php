@@ -102,8 +102,8 @@ class DatabaseSeeder extends Seeder
             'problem_description' => 'Se frego el carrito',
             'latitud' => -17.851482,
             'longitud' => -63.166290,
-            'photos' => 'a',
-            'voice_note' => 'a',
+            'photos' => '/storage/imagenes/assistance/1700976352_download.jpg',
+            'voice_note' => '/storage/audios/assistance/1700984668_audio2973876614514860828.m4a',
             'status_id' =>$stado_disponible->id
         ]);
 
@@ -113,8 +113,8 @@ class DatabaseSeeder extends Seeder
             'problem_description' => 'No da el radiador',
             'latitud' => -17.851482,
             'longitud' => -63.166290,
-            'photos' => 'a',
-            'voice_note' => 'a',
+            'photos' => '/storage/imagenes/assistance/1700976352_download.jpg',
+            'voice_note' => '/storage/audios/assistance/1700984668_audio2973876614514860828.m4a',
             'status_id' => $stado_disponible->id
         ]);
         
