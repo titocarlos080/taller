@@ -4,11 +4,14 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Assistance_request;
+use App\Models\Assistance_requests_workshop;
 use App\Models\Client;
+use App\Models\Technician;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\Workshop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AssistanceRequestController extends Controller
@@ -67,49 +70,66 @@ class AssistanceRequestController extends Controller
             return response()->json(['message' => 'Error al procesar la solicitud de asistencia', 'error' => $th->getMessage()], 500);
         }
     }
-   public function getAssistanceRequestsAviable(){
-    try {
-        //code...
-      
-        $respuesta = Assistance_request::leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
-            ->leftJoin('users as CLI', 'CLI.id', 'clients.user_id')
-            ->leftJoin('vehicles', 'vehicles.id', 'assistance_requests.vehicle_id')
-            ->select(
-                'assistance_requests.id as assistance_request_id',
-                'assistance_requests.problem_description as problem_description',
-                'assistance_requests.latitud as latitud',
-                'assistance_requests.longitud as longitud',
-                'assistance_requests.photos as photos',
-                'assistance_requests.voice_note as voice_note',
-                'assistance_requests.status_id as status',
-                'assistance_requests.created_at as assistance_request_date',
+    
 
-                // CLIENTE
-                'assistance_requests.client_id as client_id',
-                'clients.phone as client_phone',
-                'clients.user_id as client_user_id',
-                'CLI.name as client_user_name',
-                'CLI.email as client_user_email',
 
-                // VEHICULO
-                'assistance_requests.vehicle_id as vehicle_id',
-                'vehicles.brand as vehicle_brand',
-                'vehicles.model as vehicle_model',
-                'vehicles.year as vehicle_year',
-                'vehicles.licence_plate as vehicle_licence_plate',
 
-            
 
-            )
-            ->where('assistance_requests.status_id', 1)
-            ->get();
-        return response()->json($respuesta, 201);
-    } catch (\Throwable $th) {
-        //throw $th;
-        return response()->json(['message' => 'Error al procesar la solicitud de asistencia', 'error' => $th->getMessage()], 500);
+
+
+
+
+
+
+
+
+
+
+
+
+    public function getAssistanceRequestsAviable()
+    {
+        try {
+            //code...
+
+            $respuesta = Assistance_request::leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
+                ->leftJoin('users as CLI', 'CLI.id', 'clients.user_id')
+                ->leftJoin('vehicles', 'vehicles.id', 'assistance_requests.vehicle_id')
+                ->select(
+                    'assistance_requests.id as assistance_request_id',
+                    'assistance_requests.problem_description as problem_description',
+                    'assistance_requests.latitud as latitud',
+                    'assistance_requests.longitud as longitud',
+                    'assistance_requests.photos as photos',
+                    'assistance_requests.voice_note as voice_note',
+                    'assistance_requests.status_id as status',
+                    'assistance_requests.created_at as assistance_request_date',
+
+                    // CLIENTE
+                    'assistance_requests.client_id as client_id',
+                    'clients.phone as client_phone',
+                    'clients.user_id as client_user_id',
+                    'CLI.name as client_user_name',
+                    'CLI.email as client_user_email',
+
+                    // VEHICULO
+                    'assistance_requests.vehicle_id as vehicle_id',
+                    'vehicles.brand as vehicle_brand',
+                    'vehicles.model as vehicle_model',
+                    'vehicles.year as vehicle_year',
+                    'vehicles.licence_plate as vehicle_licence_plate',
+
+
+
+                )
+                ->where('assistance_requests.status_id', 1)
+                ->get();
+            return response()->json($respuesta, 201);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['message' => 'Error al procesar la solicitud de asistencia', 'error' => $th->getMessage()], 500);
+        }
     }
-
-   }
 
 
     public function getAssistanceRequests($client_id)
@@ -143,9 +163,6 @@ class AssistanceRequestController extends Controller
                     'vehicles.model as vehicle_model',
                     'vehicles.year as vehicle_year',
                     'vehicles.licence_plate as vehicle_licence_plate',
-
-                
-
                 )
                 ->where('assistance_requests.client_id', $cliente->id)
                 ->get();
@@ -158,57 +175,195 @@ class AssistanceRequestController extends Controller
     public function getAssistanceRequestsWorkShops($client_id)
     {
         try {
-            $cliente = Client::where('user_id', $client_id)->first();
+            $user = User::where('id', $client_id)->first();
+            if ($user->rol_id == 1) {
+                $workshop = Workshop::where('user_id', $client_id)->first();
+                $respuesta = Assistance_requests_workshop::leftJoin('workshops', 'workshops.id', 'assistance_requests_workshop.workshop_id')
+                    ->leftJoin('users as TA', 'TA.id', 'workshops.user_id')
+                    ->leftJoin('technicians', 'technicians.id', 'assistance_requests_workshop.technician_id')
+                    ->leftJoin('assistance_requests', 'assistance_requests.id', 'assistance_requests_workshop.assistance_request_id')
+                    ->leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
+                    ->leftJoin('users as TC', 'TC.id', 'technicians.user_id')
+                    ->leftJoin('users as CLI', 'CLI.id', 'clients.user_id')
+                    ->leftJoin('vehicles', 'vehicles.id', 'assistance_requests.vehicle_id')
+                    ->leftJoin('statuses', 'statuses.id', 'assistance_requests.status_id')
 
-            $respuesta = Assistance_request::leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
-                ->leftJoin('users as CLI', 'CLI.id', 'clients.user_id')
-                ->leftJoin('workshops', 'workshops.id', 'assistance_requests.workshop_id')
-                ->leftJoin('users as TA', 'TA.id', 'workshops.user_id')
-                ->leftJoin('technicians', 'technicians.id', 'assistance_requests.technician_id')
-                ->leftJoin('vehicles', 'vehicles.id', 'assistance_requests.vehicle_id')
+                    ->select(
+                        //ASSISTANCE_WORKSHOP
+                        'assistance_requests_workshop.id as assistance_requests_workshop_id',
+                        'assistance_requests_workshop.price as assistance_requests_workshop_price',
+                        //ASISSTANCE
+                        'assistance_requests_workshop.assistance_request_id as assistance_request_id',
+                        'assistance_requests.problem_description as problem_description',
+                        'assistance_requests.latitud as latitud',
+                        'assistance_requests.longitud as longitud',
+                        'assistance_requests.photos as photos',
+                        'assistance_requests.voice_note as voice_note',
+                        'assistance_requests.created_at as assistance_request_date',
 
-                ->select(
-                    'assistance_requests.id as assistance_request_id',
-                    'assistance_requests.problem_description as problem_description',
-                    'assistance_requests.latitud as latitud',
-                    'assistance_requests.longitud as longitud',
-                    'assistance_requests.photos as photos',
-                    'assistance_requests.voice_note as voice_note',
-                    'assistance_requests.status as status',
-                    'assistance_requests.created_at as assistance_request_date',
+                        // CLIENTE
+                        'assistance_requests.client_id as client_id',
+                        'clients.phone as client_phone',
+                        'clients.user_id as client_user_id',
+                        'CLI.name as client_user_name',
+                        'CLI.email as client_user_email',
 
-                    // CLIENTE
-                    'assistance_requests.client_id as client_id',
-                    'clients.phone as client_phone',
-                    'clients.user_id as client_user_id',
-                    'CLI.name as client_user_name',
-                    'CLI.email as client_user_email',
+                        // TALLER
+                        'assistance_requests_workshop.workshop_id as workshop_id',
+                        'workshops.description as workshop_description',
+                        'workshops.location as workshop_location',
+                        'workshops.contact_info as workshop_contact_info',
+                        'TA.id as workshop_user_id',
+                        'TA.name as workshop_user_name',
+                        'TA.email as workshop_user_email',
 
-                    // TALLER
-                    'assistance_requests.workshop_id as workshop_id',
-                    'workshops.description as workshop_description',
-                    'workshops.location as workshop_location',
-                    'workshops.contact_info as workshop_contact_info',
-                    'TA.id as workshop_user_id',
-                    'TA.name as workshop_user_name',
-                    'TA.email as workshop_user_email',
+                        // TECNICO
+                        'assistance_requests_workshop.technician_id as technician_id',
+                        'technicians.phone as technician_phone',
+                        'TC.id as technicians_user_id',
+                        'TC.name as technicians_user_name',
+                        'TC.email as technicians_user_email',
+                        // VEHICULO
+                        'assistance_requests.vehicle_id as vehicle_id',
+                        'vehicles.brand as vehicle_brand',
+                        'vehicles.model as vehicle_model',
+                        'vehicles.year as vehicle_year',
+                        'vehicles.licence_plate as vehicle_licence_plate',
+                        //ESTADO
+                        'assistance_requests.status_id as status_id',
+                        'statuses.name as status_name',
 
-                    // TECNICO
-                    'assistance_requests.technician_id as technician_id',
-                    'technicians.name as technicians',
-                    'technicians.phone as technician_phone',
+                    )
+                    ->where('assistance_requests_workshop.workshop_id', $workshop->id)
+                    ->get();
 
-                    // VEHICULO
-                    'assistance_requests.vehicle_id as vehicle_id',
-                    'vehicles.brand as vehicle_brand',
-                    'vehicles.model as vehicle_model',
-                    'vehicles.year as vehicle_year',
-                    'vehicles.licence_plate as vehicle_licence_plate',
-                )
-                ->where('assistance_requests.client_id', $cliente->id)
-                ->get();
+                return response()->json($respuesta, 201);
+            } elseif ($user->rol_id == 2) {
+                $technician = Technician::where('user_id', $client_id)->first();
+                $respuesta = Assistance_requests_workshop::leftJoin('workshops', 'workshops.id', 'assistance_requests_workshop.workshop_id')
+                    ->leftJoin('users as TA', 'TA.id', 'workshops.user_id')
+                    ->leftJoin('technicians', 'technicians.id', 'assistance_requests_workshop.technician_id')
+                    ->leftJoin('assistance_requests', 'assistance_requests.id', 'assistance_requests_workshop.assistance_request_id')
+                    ->leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
+                    ->leftJoin('users as TC', 'TC.id', 'technicians.user_id')
+                    ->leftJoin('users as CLI', 'CLI.id', 'clients.user_id')
+                    ->leftJoin('vehicles', 'vehicles.id', 'assistance_requests.vehicle_id')
+                    ->leftJoin('statuses', 'statuses.id', 'assistance_requests.status_id')
 
-            return response()->json($respuesta, 201);
+                    ->select(
+                        //ASSISTANCE_WORKSHOP
+                        'assistance_requests_workshop.id as assistance_requests_workshop_id',
+                        'assistance_requests_workshop.price as assistance_requests_workshop_price',
+                        //ASISSTANCE
+                        'assistance_requests_workshop.assistance_request_id as assistance_request_id',
+                        'assistance_requests.problem_description as problem_description',
+                        'assistance_requests.latitud as latitud',
+                        'assistance_requests.longitud as longitud',
+                        'assistance_requests.photos as photos',
+                        'assistance_requests.voice_note as voice_note',
+                        'assistance_requests.created_at as assistance_request_date',
+
+                        // CLIENTE
+                        'assistance_requests.client_id as client_id',
+                        'clients.phone as client_phone',
+                        'clients.user_id as client_user_id',
+                        'CLI.name as client_user_name',
+                        'CLI.email as client_user_email',
+
+                        // TALLER
+                        'assistance_requests_workshop.workshop_id as workshop_id',
+                        'workshops.description as workshop_description',
+                        'workshops.location as workshop_location',
+                        'workshops.contact_info as workshop_contact_info',
+                        'TA.id as workshop_user_id',
+                        'TA.name as workshop_user_name',
+                        'TA.email as workshop_user_email',
+
+                        // TECNICO
+                        'assistance_requests_workshop.technician_id as technician_id',
+                        'technicians.phone as technician_phone',
+                        'TC.id as technicians_user_id',
+                        'TC.name as technicians_user_name',
+                        'TC.email as technicians_user_email',
+                        // VEHICULO
+                        'assistance_requests.vehicle_id as vehicle_id',
+                        'vehicles.brand as vehicle_brand',
+                        'vehicles.model as vehicle_model',
+                        'vehicles.year as vehicle_year',
+                        'vehicles.licence_plate as vehicle_licence_plate',
+                        //ESTADO
+                        'assistance_requests.status_id as status_id',
+                        'statuses.name as status_name',
+
+                    )
+                    ->where('assistance_requests_workshop.technician_id', $technician->id)
+                    ->get();
+
+                return response()->json($respuesta, 201);
+            } else {
+
+                $cliente = Client::where('user_id', $client_id)->first();
+                $respuesta = Assistance_requests_workshop::leftJoin('workshops', 'workshops.id', 'assistance_requests_workshop.workshop_id')
+                    ->leftJoin('users as TA', 'TA.id', 'workshops.user_id')
+                    ->leftJoin('technicians', 'technicians.id', 'assistance_requests_workshop.technician_id')
+                    ->leftJoin('assistance_requests', 'assistance_requests.id', 'assistance_requests_workshop.assistance_request_id')
+                    ->leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
+                    ->leftJoin('users as TC', 'TC.id', 'technicians.user_id')
+                    ->leftJoin('users as CLI', 'CLI.id', 'clients.user_id')
+                    ->leftJoin('vehicles', 'vehicles.id', 'assistance_requests.vehicle_id')
+                    ->leftJoin('statuses', 'statuses.id', 'assistance_requests.status_id')
+
+                    ->select(
+                        //ASSISTANCE_WORKSHOP
+                        'assistance_requests_workshop.id as assistance_requests_workshop_id',
+                        'assistance_requests_workshop.price as assistance_requests_workshop_price',
+                        //ASISSTANCE
+                        'assistance_requests_workshop.assistance_request_id as assistance_request_id',
+                        'assistance_requests.problem_description as problem_description',
+                        'assistance_requests.latitud as latitud',
+                        'assistance_requests.longitud as longitud',
+                        'assistance_requests.photos as photos',
+                        'assistance_requests.voice_note as voice_note',
+                        'assistance_requests.created_at as assistance_request_date',
+
+                        // CLIENTE
+                        'assistance_requests.client_id as client_id',
+                        'clients.phone as client_phone',
+                        'clients.user_id as client_user_id',
+                        'CLI.name as client_user_name',
+                        'CLI.email as client_user_email',
+
+                        // TALLER
+                        'assistance_requests_workshop.workshop_id as workshop_id',
+                        'workshops.description as workshop_description',
+                        'workshops.location as workshop_location',
+                        'workshops.contact_info as workshop_contact_info',
+                        'TA.id as workshop_user_id',
+                        'TA.name as workshop_user_name',
+                        'TA.email as workshop_user_email',
+
+                        // TECNICO
+                        'assistance_requests_workshop.technician_id as technician_id',
+                        'technicians.phone as technician_phone',
+                        'TC.id as technicians_user_id',
+                        'TC.name as technicians_user_name',
+                        'TC.email as technicians_user_email',
+                        // VEHICULO
+                        'assistance_requests.vehicle_id as vehicle_id',
+                        'vehicles.brand as vehicle_brand',
+                        'vehicles.model as vehicle_model',
+                        'vehicles.year as vehicle_year',
+                        'vehicles.licence_plate as vehicle_licence_plate',
+                        //ESTADO
+                        'assistance_requests.status_id as status_id',
+                        'statuses.name as status_name',
+
+                    )
+                    ->where('assistance_requests.client_id', $cliente->id)
+                    ->get();
+
+                return response()->json($respuesta, 201);
+            }
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Error al procesar la solicitud de asistencia', 'error' => $th->getMessage()], 500);
         }
@@ -224,7 +379,7 @@ class AssistanceRequestController extends Controller
                 'longitud' => 'required',
                 'photos' => 'required|image',
                 'voice_note' => 'required',
-             ]);
+            ]);
 
             $cliente = Client::where('user_id', $request->user_id)->first();
             $timestamp = time();

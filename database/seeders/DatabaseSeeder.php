@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Assistance_request;
+use App\Models\Assistance_requests_workshop;
 use App\Models\Client;
 use App\Models\Rol;
 use App\Models\Status;
@@ -35,7 +36,7 @@ class DatabaseSeeder extends Seeder
             'rol_id' => $rol_taller->id
         ]);
 
-        $tallerTecn = Workshop::create([
+        $workshop1 = Workshop::create([
             'description' => 'Somos un taller de Primer nivel',
             'location' => 'Los lotes entre 8vo y 9no anillo',
             'contact_info' => '30236526',
@@ -58,12 +59,12 @@ class DatabaseSeeder extends Seeder
 
         $tecnico1 = Technician::create([
             'phone' => '10235894',
-            'workshop_id' => $tallerTecn->id,
+            'workshop_id' => $workshop1->id,
             'user_id' => $tecnico1_user->id
         ]);
         $tecnico2 = Technician::create([
             'phone' => '10235894',
-            'workshop_id' => $tallerTecn->id,
+            'workshop_id' => $workshop1->id,
             'user_id' =>  $tecnico2_user->id
         ]);
 
@@ -96,7 +97,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        Assistance_request::create([
+       $assistance1= Assistance_request::create([
             'client_id' => $cliVehicle->id,
             'vehicle_id' => $vehiculo1->id,
             'problem_description' => 'Se frego el carrito',
@@ -107,7 +108,7 @@ class DatabaseSeeder extends Seeder
             'status_id' =>$stado_disponible->id
         ]);
 
-        Assistance_request::create([
+        $assistance2=  Assistance_request::create([
             'client_id' => $cliVehicle->id,
             'vehicle_id' => $vehiculo2->id,
             'problem_description' => 'No da el radiador',
@@ -117,6 +118,17 @@ class DatabaseSeeder extends Seeder
             'voice_note' => '/storage/audios/assistance/1700984668_audio2973876614514860828.m4a',
             'status_id' => $stado_disponible->id
         ]);
-        
+       
+        Assistance_requests_workshop::create([
+            'price'=>400,
+            'workshop_id'=>$workshop1->id,
+            'technician_id'=>$tecnico1->id,
+            'assistance_request_id'=>$assistance1->id
+        ]);
+        $assistance1->update([
+            'status_id' => $stado_trabajando->id
+        ]);
+
+
     }
 }

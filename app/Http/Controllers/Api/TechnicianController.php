@@ -24,7 +24,7 @@ class TechnicianController extends Controller
                 'workshop_id' => 'required'
             ]);
 
-            $workshop = Workshop::where('user_id', $request->workshop_id)->first();
+            $workshop = Workshop::where('id', $request->workshop_id)->first();
 
             $user_tecnico =  User::create([
                 'name' => $request->name,
@@ -32,9 +32,9 @@ class TechnicianController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'rol_id' => $request->rol_id
             ]);
-            $user_tecnico->save();
+           
              Technician::create([
-                'phone' =>  $request->phone ? $request->phone : '',
+                'phone' =>  $request->phone,
                 'workshop_id' => $workshop->id,
                 'user_id' => $user_tecnico->id
             ]);

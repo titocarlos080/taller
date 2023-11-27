@@ -32,11 +32,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/sanctum/token', [AuthController::class, 'generateToken']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/users', [AuthController::class, 'users']);
-
 Route::get('/assistance_request/getVehicles/client_id={id}', [AssistanceRequestController::class, 'getVehicles']);
 Route::post('/vehicles/register', [AssistanceRequestController::class, 'registerVehicle']);
  Route::post('/asisstance_request/register', [AssistanceRequestController::class, 'clientRequestAssistance']);
 // solicidtud de todas las 
+Route::get('/assistance_request_workshop/getAll/client_id={id}', [AssistanceRequestController::class, 'getAssistanceRequestsWorkshops']);
 Route::get('/assistance_request/getAll/client_id={id}', [AssistanceRequestController::class, 'getAssistanceRequests']);
 Route::get('/assistance_request/getAll', [AssistanceRequestController::class, 'getAssistanceRequestsAviable']);
 //pagos
@@ -46,4 +46,6 @@ Route::get('/workshop/technician/getAll/client_id={id}', [TechnicianController::
 Route::post('/workshop/technicians/register', [TechnicianController::class, 'createTechnician']);
 //workshops
 Route::get('/workshop/all', [WorkShopController::class, 'getWorkShops']);
+Route::post('/workshops/assistance/design', [WorkShopController::class, 'designAssistance']);
+Route::post('/workshops/terminate/assistance', [WorkShopController::class, 'terminarAssistance']);
 Route::get('/workshop/technicians/all/client_id={id}', [TechnicianController::class, 'getTechnician']);

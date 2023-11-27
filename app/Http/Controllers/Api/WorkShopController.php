@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assistance_request;
+use App\Models\Assistance_requests_workshop;
 use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WorkShopController extends Controller
 {
@@ -32,4 +35,45 @@ class WorkShopController extends Controller
             return $th;
         }
     }
+    public function designAssistance(Request $request)
+    {
+        try {
+        
+            $request->validate([
+                'technician_id' => 'required',
+                'assistance_request_id' => 'required',
+                'price' => 'required',
+                'user_id' => 'required|string',
+            ]);
+            $workshop = Workshop::where('user_id', $request->user_id)->first();
+            Assistance_requests_workshop::create([
+                'price' => $request->price,
+                'workshop_id' => $workshop->id,
+                'technician_id' => $request->technician_id,
+                'assistance_request_id' => $request->assistance_request_id
+            ]);
+            $assistance = Assistance_request::where('id', $request->assistance_request_id)->first();
+            $assistance->update(['status_id' => 2]);
+            
+            return response()->json(['message' => 'La asistenicca se designo corectamente'], 201);
+        } catch (\Throwable $th) {
+            
+            return response()->json(['message' => 'Error al procesar la designacion', 'error' => $th->getMessage()], 500);
+        }
+    }    public function terminarAssistance(Request $request)
+    {
+        try {
+             $request->validate([
+                 'assistance_request_id' => 'required',
+             ]);
+            $assistance = Assistance_request::where('id', $request->assistance_request_id)->first();
+           $assistance->update(['status_id' => 3]);
+            
+            return response()->json(['message' => 'La asistenicca se termino corectamente'], 201);
+        } catch (\Throwable $th) {
+            
+            return response()->json(['message' => 'Error al procesar la designacion', 'error' => $th->getMessage()], 500);
+        }
+    }
+
 }
