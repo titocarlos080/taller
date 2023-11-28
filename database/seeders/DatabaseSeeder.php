@@ -107,7 +107,7 @@ class DatabaseSeeder extends Seeder
             'voice_note' => '/storage/audios/assistance/1700984668_audio2973876614514860828.m4a',
             'status_id' =>$stado_disponible->id
         ]);
-
+ 
         $assistance2=  Assistance_request::create([
             'client_id' => $cliVehicle->id,
             'vehicle_id' => $vehiculo2->id,
@@ -118,6 +118,35 @@ class DatabaseSeeder extends Seeder
             'voice_note' => '/storage/audios/assistance/1700984668_audio2973876614514860828.m4a',
             'status_id' => $stado_disponible->id
         ]);
+
+
+
+        
+$descripciones = [
+    'No da el radiador',
+    'Problemas con el motor',
+    'Neumático pinchado',
+    'Problemas eléctricos',
+    'Fallo en la transmisión',
+    'Problemas de arranque',
+    'Luces no funcionan',
+    'Fuga de aceite',
+    'Frenos desgastados',
+    'Problema con el sistema de escape'
+];
+
+foreach ($descripciones as $descripcion) {
+    Assistance_request::create([
+        'client_id' => $cliVehicle->id,
+        'vehicle_id' => $vehiculo2->id,
+        'problem_description' => $descripcion,
+        'latitud' => -17.851482,
+        'longitud' => -63.166290,
+        'photos' => '/storage/imagenes/assistance/1700976352_download.jpg',
+        'voice_note' => '/storage/audios/assistance/1700984668_audio2973876614514860828.m4a',
+        'status_id' => $stado_disponible->id
+    ]);
+}
        
         Assistance_requests_workshop::create([
             'price'=>400,

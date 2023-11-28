@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class WorkShopController extends Controller
 {
-    //$respuesta = Assistance_request::leftJoin('clients', 'clients.id', 'assistance_requests.client_id')
-    // id |           description           |             location             | contact_info | user_id |     created_at      |     updated_at
-    public function getWorkShops()
+     public function getWorkShops()
     {
         try {
             //code...
