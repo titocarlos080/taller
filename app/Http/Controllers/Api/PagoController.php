@@ -35,8 +35,7 @@ class PagoController extends Controller
 
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json(['Error:'=>$th]);
-        }
+            return response()->json(['message' => 'error al realizar ppago', 'error' => $th,], 500);        }
        
      
     }
