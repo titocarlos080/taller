@@ -17,19 +17,27 @@ class PagoController extends Controller
 
     public function procesarPago(Request $request)
     {  
-        
-        $request->validate([
-            'assistance_request_id'=>'required',
-        'workshop_id'=>'required',
-        'technician_id'=>'required',
-        'client_id'=>'required',
-        'price'=>'required',
-        ]);
-        
-        $asistence= Assistance_request::where('id',$request->assistance_request_id)->first();
-       $asistence->upadate([
-        'status_id'=>3
-       ]);
+        try {
+            //code...
+            $request->validate([
+                'assistance_request_id'=>'required',
+                'workshop_id'=>'required',
+                'technician_id'=>'required',
+                'client_id'=>'required',
+                'price'=>'required',
+                ]);
+                
+                $asistence= Assistance_request::where('id',$request->assistance_request_id)->first();
+               $asistence->upadate([
+                'status_id'=>3
+               ]);
+            return response()->json(['message:'=>'El pago se realizo correctamente'],201);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['Error:'=>$th]);
+        }
+       
      
     }
 
