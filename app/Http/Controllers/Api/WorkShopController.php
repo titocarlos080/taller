@@ -74,4 +74,15 @@ class WorkShopController extends Controller
         }
     }
 
+
+    public function getGanancia( $client_id){
+           
+           $workshop= Workshop::where('user_id',$client_id)->first();
+ 
+           $ganancia = Assistance_requests_workshop::where('workshop_id', $workshop->id)
+           ->sum('price')??0;
+        return $ganancia;
+
+    }
+
 }

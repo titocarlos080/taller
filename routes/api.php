@@ -48,4 +48,5 @@ Route::post('/workshop/technicians/register', [TechnicianController::class, 'cre
 Route::get('/workshop/all', [WorkShopController::class, 'getWorkShops']);
 Route::post('/workshops/assistance/design', [WorkShopController::class, 'designAssistance']);
 Route::post('/workshops/terminate/assistance', [WorkShopController::class, 'terminarAssistance']);
+Route::get('/workshops/ganancias/client_id={id}', [WorkShopController::class, 'getGanancia']);
 Route::get('/workshop/technicians/all/client_id={id}', [TechnicianController::class, 'getTechnician']);

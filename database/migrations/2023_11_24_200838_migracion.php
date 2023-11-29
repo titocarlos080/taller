@@ -80,7 +80,7 @@ return new class extends Migration
         });
         Schema::create('assistance_requests_workshop', function (Blueprint $table) {
             $table->id();
-            $table->string('price')->nullable();
+            $table->float('price')->nullable();
             $table->unsignedBigInteger('workshop_id')->nullable()->foreign('workshop_id')->references('id')->on('workshops')->onDelete('set null');
             $table->unsignedBigInteger('technician_id')->nullable()->foreign('technician_id')->references('id')->on('technicians')->onDelete('set null');
             $table->unsignedBigInteger('assistance_request_id')->nullable()->foreign('assistance_request_id')->references('id')->on('assistance_requests')->onDelete('set null');
