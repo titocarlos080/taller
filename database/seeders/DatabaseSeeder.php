@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $stado_disponible = Status::create(['name'=>'disponible']);
         $stado_trabajando = Status::create(['name'=> 'trabajando']);
         $stado_terminado = Status::create(['name'=>'terminado']);
+        $stado_terminado = Status::create(['name'=>'pagado']);
 
         $taller = User::create([
             'name' => 'Tito Carlos',
