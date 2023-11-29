@@ -29,7 +29,7 @@ class TechnicianController extends Controller
             $user_tecnico =  User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->input('password')),
+                'password' => Hash::make($request->password),
                 'rol_id' => $request->rol_id
             ]);
            
