@@ -80,12 +80,12 @@ class AuthController extends Controller
             ]);
         }
 
-        if ($request->input('rol_id') == "2") {
+        if ($request->input('rol_id') == "3") {
             Client::create([
                 'user_id' => $user->id
             ]);
         }
-        if ($request->input('rol_id') == "3") {
+        if ($request->input('rol_id') == "2") {
             Technician::create([
                 'user_id' => $user->id,
                 'workshop_id' => $request->workshop_id
