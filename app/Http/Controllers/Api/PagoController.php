@@ -28,7 +28,7 @@ class PagoController extends Controller
                 ]);
                 
                 $asistence= Assistance_request::where('id',$request->assistance_request_id)->first();
-               $asistence->upadate([
+               $asistence->update([
                 'status_id'=>3
                ]);
             return response()->json(['message:'=>'El pago se realizo correctamente'],201);
