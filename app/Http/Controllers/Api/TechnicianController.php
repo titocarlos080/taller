@@ -24,7 +24,7 @@ class TechnicianController extends Controller
                 'workshop_id' => 'required'
             ]);
            
-            $workshop = Workshop::where('id_user', $request->workshop_id)->first();
+            $workshop = Workshop::where('user_id', $request->workshop_id)->first();
 
             $user_tecnico =  User::create([
                 'name' => $request->name,
